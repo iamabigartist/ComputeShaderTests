@@ -1,0 +1,23 @@
+#pragma kernel CSMain
+
+
+int count;
+RWStructuredBuffer<int> array;
+
+
+static int my_index;
+
+int double_my_index()
+{
+    return 2 * my_index;
+}
+
+[numthreads(256,1,1)]
+void CSMain(uint3 id : SV_DispatchThreadID)
+{
+    int i = id.x;
+    if (!(i < count))return;
+
+    my_index = i;
+    array[i] = double_my_index();
+}

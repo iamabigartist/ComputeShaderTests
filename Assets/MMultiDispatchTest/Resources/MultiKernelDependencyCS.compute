@@ -1,0 +1,29 @@
+#pragma kernel Pass1
+#pragma kernel Pass2
+
+RWStructuredBuffer<float> temporary_b;
+RWStructuredBuffer<float> final_b;
+
+[numthreads(16,1,1)]
+void Pass1(uint3 id : SV_DispatchThreadID)
+{
+    int i = id.x;
+    double v = i;
+    for (int i1 = 0; i1 < 100; i1++)
+    {
+        v *= 1.1;
+    }
+    temporary_b[i] = v;
+}
+
+[numthreads(16,1,1)]
+void Pass2(uint3 id : SV_DispatchThreadID)
+{
+    int i = id.x;
+    double v = temporary_b[i];
+    for (int i1 = 0; i1 < 100; i1++)
+    {
+        v /= 1.1;
+    }
+    final_b[i] = v;
+}

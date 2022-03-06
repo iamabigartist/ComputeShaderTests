@@ -1,0 +1,10 @@
+#pragma kernel CSMain
+
+int position;
+RWStructuredBuffer<int> indices;
+
+[numthreads(1,1,1)]
+void CSMain(uint3 id : SV_DispatchThreadID)
+{
+    indices[position] = 0;
+}

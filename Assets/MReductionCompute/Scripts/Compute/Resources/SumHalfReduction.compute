@@ -1,0 +1,63 @@
+﻿#pragma kernel reduce6
+#define groupDim_x 128
+
+uint n;
+uint dispatchDim_x;
+groupshared float sdata[groupDim_x];
+RWStructuredBuffer<float> g_idata;
+RWStructuredBuffer<float> g_odata;
+[numthreads(groupDim_x, 1, 1)]
+void reduce6(uint tid : SV_GroupIndex,
+uint3 groupIdx : SV_GroupID)
+{
+    unsigned int i = groupIdx.x * (groupDim_x * 2) + tid;
+    unsigned int dispatchSize = groupDim_x * 2 * dispatchDim_x;
+    sdata[tid] = 0;
+    do
+    {
+        sdata[tid] += g_idata[i] + g_idata[i + groupDim_x];
+        i += dispatchSize;
+    } while (i < n);
+    GroupMemoryBarrierWithGroupSync();
+    if (groupDim_x >= 512)
+    {
+        if (tid < 256)
+        {
+            sdata[tid] += sdata[tid + 256];
+        }
+        GroupMemoryBarrierWithGroupSync();
+    }
+    if (groupDim_x >= 256)
+    {
+        if (tid < 128)
+        {
+            sdata[tid] += sdata[tid + 128];
+        }
+        GroupMemoryBarrierWithGroupSync();
+    }
+    if (groupDim_x >= 128)
+    {
+        if (tid < 64)
+        {
+            sdata[tid] += sdata[tid + 64];
+        }
+        GroupMemoryBarrierWithGroupSync();
+    }
+    if (tid < 32)
+    {
+        if (groupDim_x >= 64)
+            sdata[tid] += sdata[tid + 32];
+        if (groupDim_x >= 32)
+            sdata[tid] += sdata[tid + 16];
+        if (groupDim_x >= 16)
+            sdata[tid] += sdata[tid + 8];
+        if (groupDim_x >= 8)
+            sdata[tid] += sdata[tid + 4];
+        if (groupDim_x >= 4)
+            sdata[tid] += sdata[tid + 2];
+        if (groupDim_x >= 2)
+            sdata[tid] += sdata[tid + 1];
+    }
+    if (tid == 0)
+        g_odata[groupIdx.x] = sdata[0];
+}

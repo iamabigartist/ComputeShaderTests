@@ -1,0 +1,17 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+
+int array_length;
+RWStructuredBuffer<int> result;
+RWStructuredBuffer<int> dict;
+
+[numthreads(100,1,1)]
+void CSMain(uint3 id : SV_DispatchThreadID)
+{
+    int i = id.x;
+
+    uint k = result.IncrementCounter();
+    result[k] = i;
+    dict[i] = k;
+}

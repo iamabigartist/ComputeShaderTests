@@ -1,0 +1,17 @@
+#pragma kernel CSMain
+
+float3 origin;
+int array_len;
+float time;
+
+StructuredBuffer<float> matrix_x;
+RWStructuredBuffer<float3> matrix_f_xyz;
+
+[numthreads(1024,1,1)]
+void CSMain(uint3 id : SV_DispatchThreadID)
+{
+    int i = id.x;
+    if (!(i < array_len))return;
+    float x = matrix_x[i];
+    matrix_f_xyz[i] = origin + float3(x, sin(x + time), cos(x + time));
+}

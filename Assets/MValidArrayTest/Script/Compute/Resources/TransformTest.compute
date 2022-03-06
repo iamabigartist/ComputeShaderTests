@@ -1,0 +1,57 @@
+#pragma kernel Pass1
+#pragma kernel Pass2
+
+struct TrianglePack
+{
+    float x;
+    float y;
+    float z;
+    int i;
+};
+
+struct Triangle
+{
+    float x;
+    float y;
+    float z;
+};
+
+
+
+int data_len;
+int transit_len;
+
+StructuredBuffer<float> data;
+AppendStructuredBuffer<TrianglePack> transit1;
+
+StructuredBuffer<TrianglePack> transit2;
+RWStructuredBuffer<Triangle> mesh;
+RWStructuredBuffer<float> index_list;
+
+[numthreads(256,1,1)]
+void Pass1(uint3 id :SV_DISPATCHTHREADID)
+{
+    int i = id.x;
+    if (!( i < data_len )) { return; }
+    int element = data[i];
+    TrianglePack pack;
+    pack.x = element;
+    pack.y = pack.x * pack.x;
+    pack.z = pack.y * pack.x;
+    pack.i = i;
+    transit1.Append(pack);
+}
+
+[numthreads(256,1,1)]
+void Pass2(uint3 id :SV_DISPATCHTHREADID)
+{
+    int i = id.x;
+    if (!( i < transit_len )) { return; }
+    TrianglePack pack = transit2[i];
+    Triangle t;
+    t.x = pack.x;
+    t.y = pack.y;
+    t.z = pack.z;
+    mesh[i] = t;
+    index_list[pack.i] = i;
+}

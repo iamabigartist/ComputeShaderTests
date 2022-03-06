@@ -1,0 +1,41 @@
+#pragma kernel CSMain
+#define rotation_size 126.0
+#define face_size 6.0
+#define quad_size 4.0
+#define rotation_size_d 1 / 126.0
+#define face_size_d 1 / 6.0
+#define quad_size_d 1 / 4.0
+
+// const float texture_d = 1.0 / 1000;
+
+
+
+int4 Decompose(float i)
+{
+    float texture_i = floor(i * rotation_size_d * face_size_d * quad_size_d);
+    i -= texture_i * rotation_size * face_size * quad_size;
+
+    float rotation_i = floor(i * face_size_d * quad_size_d);
+    i -= rotation_i * face_size * quad_size;
+
+    float face_i = floor(i * quad_size_d);
+    i -= face_i * quad_size;
+
+    float quad_i = i;
+
+    return int4(texture_i, rotation_i, face_i, quad_i);
+    // return float4(i, i, i, i);
+}
+
+RWStructuredBuffer<int4> result;
+RWStructuredBuffer<int> getter;
+
+[numthreads(1024,1,1)]
+void CSMain(uint3 id : SV_DispatchThreadID)
+{
+    int i = id.x;
+    int4 decomposed_i = Decompose(i);
+    // result[i] = decomposed_i;
+    // result[i] = float4(rotation_size_d, face_size_d, quad_size_d, 0);
+    // result[i] = float4(rotation_size, face_size, quad_size, 0);
+}

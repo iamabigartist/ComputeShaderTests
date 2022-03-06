@@ -1,0 +1,120 @@
+Shader "VertexToSquare_Cloud"
+{
+    Properties
+    {
+        main_color ("MainColor", Color) = (0.5,0.5,1.0,1.0)
+
+    }
+    SubShader
+    {
+        Tags { "RenderType"="Opaque" }
+        LOD 100
+
+        Pass
+        {
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #pragma geometry geom
+            #pragma target 5.0
+            #include "UnityCG.cginc"
+
+            float4 main_color;
+			StructuredBuffer<float3> buffer;
+
+			float size = 0.5f;
+
+			struct v2g
+			{
+				float4 pos : SV_POSITION;
+				float depth : TEXCOORD1;
+			};
+
+			struct g2f
+			{
+				float4 pos : SV_POSITION;
+				float depth : TEXCOORD1;
+			};
+
+			struct v2f
+			{
+				float4 pos : SV_POSITION;
+				float depth : TEXCOORD1;
+			};
+
+//			v2f vertex_shader(uint id : SV_VertexID)
+//			{
+//				v2f p;
+//				float3 T = cloud[id];
+//				p.pos = UnityObjectToClipPos(T);
+//				p.depth = UnityObjectToViewPos(T).z * 10 + 600;
+//				return p;
+//			}
+//
+//			float4 fragment_shader(v2f p) : COLOR
+//			{
+//				return float4(main_color.rgb * p.depth / 1000, 0.4);
+//			}
+
+				v2g vert(uint id : SV_VertexID)
+				{
+					v2g p;
+					float3 T = buffer[id];
+					p.pos = float4(T,1);
+					p.depth = UnityObjectToViewPos(T).z * 10 + 600;
+					return p;
+				}
+
+				float4 object_to_billboard(float4 v)
+				{
+					float3 vpos = mul((float3x3)unity_ObjectToWorld, v.xyz);
+					float4 worldCoord = float4(unity_ObjectToWorld._m03, unity_ObjectToWorld._m13, unity_ObjectToWorld._m23, 1);
+					float4 viewPos = mul(UNITY_MATRIX_V, worldCoord) + float4(vpos, 0);
+					float4 outPos = mul(UNITY_MATRIX_P, viewPos);
+					return outPos;
+				}
+
+				[maxvertexcount(6)]
+				void geom(point v2g input[1], inout TriangleStream<g2f> triangle_stream)
+				{
+					v2g v = input[0];
+					g2f o;
+					//o.depth = v.depth;
+					//o.pos = v.pos;
+					//triangle_stream.Append(o);
+					for (int i = 0; i < 3; i++)
+					{
+						o.pos = v.pos + float4(0.05f * float3(
+							i == 0,
+							i == 1,
+							0),
+							1);
+						o.pos = object_to_billboard(o.pos);
+						o.depth = v.depth;
+						triangle_stream.Append(o);
+					}
+					triangle_stream.RestartStrip();
+
+					for (int j = 0; j < 3; j++)
+					{
+						o.pos = v.pos + float4(0.05f * float3(
+							j != 2,
+							j != 0,
+							0),
+							1);
+						o.pos = object_to_billboard(o.pos);
+						o.depth = v.depth;
+						triangle_stream.Append(o);
+					}
+					triangle_stream.RestartStrip();
+				}
+
+				float4 frag(g2f p) : COLOR
+				{
+					return float4(main_color.rgb * p.depth / 1000, 0.4);
+				}
+
+				ENDCG
+        }
+    }
+}
