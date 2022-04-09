@@ -70,8 +70,11 @@ namespace MyDecomposeAlgoTest
             getter_buffer.SetData( getter );
         }
 
+        Vector2 position;
         void OnGUI()
         {
+            position = GUILayout.BeginScrollView( position );
+
             if (stop)
             {
                 EditorGUILayout.BeginHorizontal();
@@ -87,7 +90,7 @@ namespace MyDecomposeAlgoTest
 
                 if (result != null)
                 {
-                    EditorGUILayout.LabelField( result_string );
+                    GUILayout.Box( result_string );
                 }
 
             }
@@ -108,6 +111,8 @@ namespace MyDecomposeAlgoTest
 
             }
 
+            GUILayout.EndScrollView();
+
         }
 
         void Update()
@@ -123,5 +128,12 @@ namespace MyDecomposeAlgoTest
             getter_buffer.Release();
         }
 
+        void OnInspectorUpdate()
+        {
+            if (!stop)
+            {
+                Repaint();
+            }
+        }
     }
 }
