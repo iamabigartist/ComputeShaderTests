@@ -4,7 +4,7 @@ namespace MMultiDispatchTest
 {
     public class MultiDispatchTestWindow : EditorWindow
     {
-        [MenuItem( "MMultiDispatchTest.Editor/MultiDispatchTestWindow" )]
+        [MenuItem( "Labs/MMultiDispatchTest.Editor/MultiDispatchTestWindow" )]
         static void ShowWindow()
         {
             var window = GetWindow<MultiDispatchTestWindow>();

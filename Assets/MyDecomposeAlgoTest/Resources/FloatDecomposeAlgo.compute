@@ -1,0 +1,39 @@
+#pragma kernel CSMain
+#define chunk_size 100.0
+#define chunk_size_d 1 / 100.0
+
+float3 Decompose(float i)
+{
+    float z = floor(i * chunk_size_d * chunk_size_d);
+    i -= z * chunk_size * chunk_size;
+
+    float y = floor(i * chunk_size_d);
+    i -= y * chunk_size;
+
+    float x = i;
+
+    return float3(x, y, z);
+}
+
+float Compose(float3 position)
+{
+    float i = 0;
+    i += position.z * chunk_size * chunk_size;
+    i += position.y * chunk_size;
+    i += position.x;
+    return i;
+}
+
+RWStructuredBuffer<float3> result;
+RWStructuredBuffer<float3> getter;
+
+[numthreads(1024,1,1)]
+void CSMain(uint3 id : SV_DispatchThreadID)
+{
+    int i = id.x;
+    float3 position = Decompose(i);
+    result[i] = position;
+    getter[i] = float3(Compose(position), 0, 0);
+    // result[i] = ;
+    // result[i] = ;
+}

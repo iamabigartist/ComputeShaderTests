@@ -24,7 +24,6 @@ int4 Decompose(float i)
     float quad_i = i;
 
     return int4(texture_i, rotation_i, face_i, quad_i);
-    // return float4(i, i, i, i);
 }
 
 RWStructuredBuffer<int4> result;

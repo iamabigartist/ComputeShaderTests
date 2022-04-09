@@ -1,15 +1,15 @@
 using UnityEditor;
 using UnityEngine;
-namespace MIncrementBufferTest.Editor
+namespace MIncrementBufferTest
 {
 
     public class IncrementBufferWindow : EditorWindow
     {
-        [MenuItem( "IncrementBufferTest.Editor/IncrementBufferWindow" )]
+        [MenuItem( "Labs/IncrementBufferTest/IncrementBufferWindow" )]
         static void ShowWindow()
         {
             var window = GetWindow<IncrementBufferWindow>();
-            window.titleContent = new GUIContent( "IncrementBufferWindow" );
+            window.titleContent = new("IncrementBufferWindow");
             window.Show();
         }
 
@@ -29,14 +29,15 @@ namespace MIncrementBufferTest.Editor
         void Awake()
         {
             cs = Resources.Load<ComputeShader>( "IncrementArrayCS" );
+            var monster = Resources.Load<GameObject>( "MyCreatures/Monster" );
             ids = (
                 Shader.PropertyToID( "array_length" ),
                 Shader.PropertyToID( "result" ),
                 Shader.PropertyToID( "dict" ));
             args = (
                 10,
-                new ComputeBuffer( 100, sizeof(int), ComputeBufferType.Counter ),
-                new ComputeBuffer( 100, sizeof(int), ComputeBufferType.Counter ));
+                new(100, sizeof(int), ComputeBufferType.Counter),
+                new(100, sizeof(int), ComputeBufferType.Counter));
 
 
 

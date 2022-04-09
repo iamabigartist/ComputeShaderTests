@@ -5,7 +5,7 @@ namespace MVoxelTest.Editor
 {
     public class TestBitwise : EditorWindow
     {
-        [MenuItem( "MVoxelTest.Editor/TestBitwise" )]
+        [MenuItem( "Labs/MVoxelTest.Editor/TestBitwise" )]
         static void ShowWindow()
         {
             var window = GetWindow<TestBitwise>();

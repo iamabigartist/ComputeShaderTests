@@ -7,7 +7,7 @@ namespace MyDecomposeAlgoTest
 {
     public class TestDecomposeEfficiency : EditorWindow
     {
-        [MenuItem( "MyDecomposeAlgoTest/TestDecomposeEfficiency" )]
+        [MenuItem( "Labs/MyDecomposeAlgoTest/TestDecomposeEfficiency" )]
         static void ShowWindow()
         {
             var window = GetWindow<TestDecomposeEfficiency>();
@@ -70,10 +70,10 @@ namespace MyDecomposeAlgoTest
             getter_buffer.SetData( getter );
         }
 
-        Vector2 position;
+        Vector2 view_position;
         void OnGUI()
         {
-            position = GUILayout.BeginScrollView( position );
+            view_position = GUILayout.BeginScrollView( view_position );
 
             if (stop)
             {
