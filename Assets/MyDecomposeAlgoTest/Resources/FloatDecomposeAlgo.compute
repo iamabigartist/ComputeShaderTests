@@ -1,6 +1,6 @@
 #pragma kernel CSMain
-#define chunk_size 100.0
-#define chunk_size_d 1 / 100.0
+#define chunk_size 101.0
+#define chunk_size_d 1 / 101.0
 
 float3 Decompose(float i)
 {
@@ -36,4 +36,5 @@ void CSMain(uint3 id : SV_DispatchThreadID)
     getter[i] = float3(Compose(position), 0, 0);
     // result[i] = ;
     // result[i] = ;
+
 }

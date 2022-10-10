@@ -57,6 +57,7 @@ namespace MyCShaderManipulateMeshTest
 
             m_mesh.SetVertices( vertices, 0, vertex_count );
             m_mesh.RecalculateNormals();
+            m_mesh.RecalculateBounds();
             m_mesh.indexBufferTarget |= GraphicsBuffer.Target.Structured;
             GetComponent<MeshFilter>().mesh = m_mesh;
         }

@@ -1,8 +1,8 @@
 #pragma kernel CSMain
-#define rotation_size 126.0
+#define rotation_size 24.0
 #define face_size 6.0
 #define quad_size 4.0
-#define rotation_size_d 1 / 126.0
+#define rotation_size_d 1 / 24.0
 #define face_size_d 1 / 6.0
 #define quad_size_d 1 / 4.0
 
@@ -35,6 +35,7 @@ void CSMain(uint3 id : SV_DispatchThreadID)
     int i = id.x;
     int4 decomposed_i = Decompose(i);
     result[i] = decomposed_i;
+    
     // result[i] = float4(rotation_size_d, face_size_d, quad_size_d, 0);
     // result[i] = float4(rotation_size, face_size, quad_size, 0);
 }
